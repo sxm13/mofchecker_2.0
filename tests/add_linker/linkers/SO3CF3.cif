@@ -1,0 +1,32 @@
+data_SO3CF3
+_audit_creation_date              2025-02-04
+_audit_creation_method            'Materials Studio'
+_symmetry_space_group_name_H-M    'P1'
+_symmetry_Int_Tables_number       1
+_symmetry_cell_setting            triclinic
+loop_
+_symmetry_equiv_pos_as_xyz
+  x,y,z
+_cell_length_a                    10.0000
+_cell_length_b                    10.0000
+_cell_length_c                    10.0000
+_cell_angle_alpha                 90.0000
+_cell_angle_beta                  90.0000
+_cell_angle_gamma                 90.0000
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_U_iso_or_equiv
+_atom_site_adp_type
+_atom_site_occupancy
+F1     F     0.34424   0.48390   0.61805   0.00000  Uiso   1.00
+C2     C     0.45974   0.43815   0.53581   0.00000  Uiso   1.00
+S3     S     0.53947   0.57456   0.47003   0.00000  Uiso   1.00
+F4     F     0.41054   0.35189   0.42474   0.00000  Uiso   1.00
+F5     F     0.55374   0.36027   0.62123   0.00000  Uiso   1.00
+O6     O     0.43350   0.66244   0.37377   0.00000  Uiso   1.00
+O7     O     0.59521   0.67199   0.59503   0.00000  Uiso   1.00
+X      O     0.66955   0.52340   0.37678   0.00000  Uiso   1.00
