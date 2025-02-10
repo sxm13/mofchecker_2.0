@@ -44,5 +44,5 @@ The positive charge of metal site can be obtained from Oximachine (https://githu
 
 ### ⚖️ License
 
-The code in this package is licensed under the MIT License.
+The code in this package is licensed under the Academic Non-Commercial Share-Alike(ANCSA) License.
 
