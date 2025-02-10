@@ -9,7 +9,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/Au-4/mofchecker_2.0",
-    license = "MIT",
+    license = "ANCSA",
     license_files=["LICENSE"],
     packages=find_packages(),
     install_requires=[
