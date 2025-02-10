@@ -10,7 +10,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Au-4/mofchecker_2.0",
     license = "MIT",
-    license_file = open("LICENSE").read()
+    license_files=["LICENSE"]，
     packages=find_packages(),
     install_requires=[
         "click",
