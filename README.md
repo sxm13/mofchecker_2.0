@@ -8,6 +8,12 @@ Development version:
 pip install git+https://github.com/Au-4/mofchecker_2.0
 ```
 
+Note that you need to install [zeopp](https://anaconda.org/conda-forge/zeopp-lsmo) if you want to use the porosity features.
+
+```bash
+conda install -c conda-forge zeopp-lsmo
+```
+
 2.Manual
 
 ### Command line interface
