@@ -15,6 +15,13 @@ conda install -c conda-forge zeopp-lsmo
 ```
 
 2.Manual
+### Input file
+We support standard CIF format file. To avoid potential issues, we strongly recommend you first read and rewirte your CIF file with ase.
+```python
+from ase.io import read, write
+mof = read(<path_to_cif>)
+write(<path_to_new_cif>, mof)
+```
 
 ### Command line interface
 

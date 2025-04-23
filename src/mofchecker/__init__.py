@@ -7,7 +7,8 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import Iterable, List, Union
 from scipy.spatial.transform import Rotation as R
-
+import psutil
+import sys
 import networkx as nx
 from ase import Atoms
 from backports.cached_property import cached_property
@@ -69,6 +70,8 @@ DESCRIPTORS = [
     "name",
     "linker_name",
     "graph_hash",
+    "spacegroup_symbol",
+    "spacegroup_number",
     "undecorated_graph_hash",
     "scaffold_hash",
     "undecorated_scaffold_hash",
@@ -101,7 +104,11 @@ DESCRIPTORS = [
     "has_geometrically_exposed_metal",
     "has_3d_connected_graph",
 ]
-
+def check_min_ram_gb(min_gb=4):
+    total_gb = psutil.virtual_memory().total / (1024**3)
+    if total_gb < min_gb:
+        raise MemoryError(f"Need at least {min_gb} GB RAM，now only {total_gb:.2f} GB")
+        sys.exit(1)
 
 class MOFChecker:
     """MOFChecker performs basic sanity checks for MOFs."""
@@ -128,6 +135,7 @@ class MOFChecker:
         Raises:
             NotImplementedError in the case of partial occupancies
         """
+        check_min_ram_gb(4)
         _check_if_ordered(structure)
 
         if (symprec is not None) or (angle_tolerance is not None):
