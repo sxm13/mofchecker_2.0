@@ -2,7 +2,7 @@
 """Check the positive charge from linkers like N with CN4 and O with CN3."""
 from pymatgen.analysis.graphs import StructureGraph
 from structuregraph_helpers.create import construct_clean_graph
-from mofchecker.types import StructureIStructureType
+from mofchecker.checker_types import StructureIStructureType
 import networkx as nx
 from .base_coordination_check import BaseCoordinationCheck
 from ..utils.get_indices import num_neighbor_metal, get_n_indices, get_o_indices, get_ge_indices, get_sb_indices, is_metal
