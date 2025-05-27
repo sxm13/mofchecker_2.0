@@ -50,7 +50,6 @@ from .checks.local_structure import (
     Positive_charge_Check,
     Negative_charge_Check,
     Fusedring_Check,
-    O_site_adding_hydrogen,
 )
 from .checks.oms import MOFOMS
 from .checks.utils.get_indices import get_c_indices, get_h_indices, get_metal_indices, get_n_indices, get_o_indices,get_ge_indices, get_sb_indices
@@ -58,7 +57,6 @@ from .checks.zeopp import PorosityCheck
 from .symmetry import get_spacegroup_symbol_and_number, get_symmetry_hash
 from .utils import _check_if_ordered
 from .version import get_version
-from .errors import Too_many_adding_linkers
 
 __version__ = get_version()
 
