@@ -1,11 +1,11 @@
-MOFChecker is an algorithm designed for MOF structure curation. It includes duplicated structure screening, geometric error checking, and charge error checking in MOF structures. Based on the check result, we also provide a workflow to clean and heal the structures with geometric or charge errors. The previous version can be found in (https://github.com/kjappelbaum/mofchecker)
+MOFChecker is an algorithm designed for MOF structure curation. It includes duplicated structure screening, geometric error checking, and charge error checking in MOF structures. Based on the check result, we also provide a workflow to clean and heal the structures with geometric or charge errors. The previous version can be found in (https://github.com/kjappelbaum/mofchecker) and (https://github.com/Au-4/mofchecker_2.0)
 
 1.Installation
 
 Development version:
 
 ```bash
-pip install git+https://github.com/Au-4/mofchecker_2.0
+pip install git+https://github.com/sxm13/mofchecker_2.0
 ```
 
 Note that you need to install [zeopp](https://anaconda.org/conda-forge/zeopp-lsmo) if you want to use the porosity features.
