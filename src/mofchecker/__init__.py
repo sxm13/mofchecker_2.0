@@ -51,7 +51,6 @@ from .checks.local_structure import (
     Negative_charge_Check,
     Fusedring_Check,
     O_site_adding_hydrogen,
-    adding_linker,
 )
 from .checks.oms import MOFOMS
 from .checks.utils.get_indices import get_c_indices, get_h_indices, get_metal_indices, get_n_indices, get_o_indices,get_ge_indices, get_sb_indices
@@ -95,8 +94,6 @@ DESCRIPTORS = [
     "metal_number",
     "positive_charge_from_linkers",
     "negative_charge_from_linkers",
-    "adding_hydrogen",
-    "adding_linker",
     "possible_charged_fused_ring",
     "is_porous",
     "has_suspicicious_terminal_oxo",
@@ -202,8 +199,6 @@ class MOFChecker:
 #            "metal_oxi": OxiCheck(self.structure),
             "positive_charge": Positive_charge_Check.from_mofchecker(self),
             "negative_charge": Negative_charge_Check.from_mofchecker(self),
-            "add_h": O_site_adding_hydrogen.from_mofchecker(self),
-            "add_linker": adding_linker.from_mofchecker(self),
             "fused_ring": Fusedring_Check.from_mofchecker(self),
             "is_porous": PorosityCheck(self.structure),
             "no_oms": MOFOMS.from_mofchecker(self),
@@ -584,125 +579,6 @@ class MOFChecker:
     def negative_charge_from_linkers(self) -> int:
         """Return negative charge value"""
         return len(self.checks["negative_charge"].flagged_indices)
-    @property
-    def adding_hydrogen(self) -> Iterable[Iterable[float]]:
-        """Return adding H coordinates cif """
-        h_coord = []
-        new_structure = Structure.from_sites(self.structure.sites)
-        atom_type = "H"
-        n = 0
-        h_number = self.h_number
-  #      print(self.checks["no_undercoordinated_carbon"].is_ok, self.checks["no_undercoordinated_nitrogen"].is_ok)
-        if not (len(self.checks["no_undercoordinated_carbon"].candidate_positions) == 0):
-            h_coord.append(self.checks["no_undercoordinated_carbon"].candidate_positions)
-    #        for group in h_coord:
-    #            for vec in group:
-    #                fra_vec = new_structure.lattice.get_fractional_coords(vec)
-    #                new_structure.append(atom_type, fra_vec)
-    #    h_coord = []
-        if not (len(self.checks["no_undercoordinated_nitrogen"].candidate_positions) == 0):
-            h_coord.append(self.checks["no_undercoordinated_nitrogen"].candidate_positions)
-        h_coord.append(self.checks["add_h"].candidate_positions)
-        for group in h_coord:
-            for vec in group:
-                if n < h_number:
-                    fra_vec = new_structure.lattice.get_fractional_coords(vec)
-                    new_structure.append(atom_type, fra_vec)
-                    n += 1
-                else:
-                    break
-        new_name = str(self.name)+'_add_H.cif'
-        new_structure.to(new_name,"cif")
-        return new_structure
-
-    @property
-    def adding_linker(self) -> Iterable[Iterable[float]]:
-        """Return adding linker coordinates cif """
-        def normal_vector(a,b,c):
-            ab = b-a
-            ac = c-a
-            normal = np.cross(ab, ac)
-            return normal
-        
-        def distance_between_groups(group1, structure):
-            min_dist = np.inf
-            for atom1 in group1:
-                fra_coords = structure.lattice.get_fractional_coords(atom1)
-                for site in structure:
-                    site_fra_coords = structure.lattice.get_fractional_coords(site.coords)
-                    dist = structure.lattice.get_distance_and_image(fra_coords, site_fra_coords)[0]
-                    if dist < min_dist:
-                        min_dist = dist
-            return min_dist
-        
-        def rotate_group(coords, axis, angle):
-            rotation = R.from_rotvec(angle * np.array(axis))
-            return rotation.apply(coords)
-        
-        i=0
-        linker_number = self.linker_number
-        mof_coords = []
-        new_structure = Structure.from_sites(self.structure.sites)
-        for site in self.structure.sites:
-            mof_coords.append(site.coords)
-        z_sites = self.checks["add_linker"].candidate_positions
-        x_indices = self.checks["add_linker"].flagged_indices
-        new_name = str(self.name)+'_add_'+str(self.linker_name)+'.cif'
-        if linker_number > len(z_sites):
-            raise Too_many_adding_linkers('Too_many_adding_linkers, should check manully')
-        for z_site in z_sites:
-            if i < linker_number:
-                x_index = x_indices[i]
-                x_coords=new_structure[x_index].coords
-                i+=1
-                mindis = 5
-                mindis_coords = [0,0,0]
-                linker_coords = [z_site]
-                angle = 0
-                for linker_site in self.linker_structure.sites:
-                    if str(linker_site.label) == 'X':
-                        vec = z_site - linker_site.coords
-                        linker_site.coords = linker_site.coords + vec
-                if len(self.linker_structure.sites)>1:
-                    for linker_site in self.linker_structure.sites:
-                        if str(linker_site.label) != 'X':
-                            linker_site.coords = linker_site.coords + vec 
-                            dis = np.linalg.norm(linker_site.coords-z_site)
-                            if dis < mindis:
-                                mindis = dis
-                                mindis_coords = linker_site.coords
-                            linker_coords.append(linker_site.coords)
-                    axis = normal_vector(z_site, x_coords,mindis_coords)
-                    step_angle = np.radians(5)
-                    origin = z_site
-                    linker_centered = linker_coords - origin
-                    dist_data={}
-                    while angle < np.radians(360):
-                        linker_centered = rotate_group(linker_centered, axis, step_angle) 
-                        linker_rotated = linker_centered + origin
-                        min_dist = distance_between_groups(linker_rotated, new_structure)
-                        dist_data[min_dist] = angle
-                        angle += step_angle
-                        if min_dist > 2.4:
-                            break
-                    max_dist = max(dist_data.keys())
-                    angle = dist_data[max_dist]
-                    linker_centered = linker_coords - origin
-                    linker_centered = rotate_group(linker_centered, axis, angle) 
-                    linker_rotated = linker_centered + origin
-
-                    j=1
-                    for linker_site in self.linker_structure.sites:
-                        if str(linker_site.label) != 'X':
-                            linker_site.coords = linker_rotated[j]
-                            j+=1
-            
-                for linker_site in self.linker_structure.sites:
-                    atom_type = linker_site.species_string
-                    fra_coords = new_structure.lattice.get_fractional_coords(linker_site.coords)
-                    new_structure.append(atom_type, fra_coords)
-        new_structure.to(new_name,"cif")
-        return new_structure
 
     @property
     def metal_number(self) -> int:
